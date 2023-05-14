@@ -200,23 +200,25 @@
             updateCustomer(customer) {
                 router.push('/customer-create/' + customer.pk);
             },
-            deleteCustomer(customer) {
-                if(confirm("Do you really want to delete?")) {
-                    apiService.deleteCustomer(customer.pk).then(response => {
-                        if (response.status === 204) {
-                            router.push('/customer-list/deleted/')
-                            this.getCustomers()
-                        }
-                    }).catch(error => {
-                        if (error.response.status === 401) {
-                            localStorage.removeItem('isAuthenticates');
-                            localStorage.removeItem('log_user');
-                            localStorage.removeItem('token');
-                            router.push("/auth");
-                        }
-                    });
-                }
-            }
+deleteCustomer(customer) {
+  if (confirm("Do you really want to delete?")) {
+    apiService.deleteCustomer(customer.pk)
+      .then(response => {
+        // Handle success response
+        // Remove the deleted customer from the customers array
+        const index = this.customers.indexOf(customer);
+        if (index !== -1) {
+          this.customers.splice(index, 1);
+        }
+        // Show success message
+        this.showMsg = 'deleted';
+      })
+      .catch(error => {
+        // Handle error response
+        console.log(error);
+      });
+  }
+}
         }
     };
 </script>
